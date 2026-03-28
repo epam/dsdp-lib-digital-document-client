@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2023 EPAM Systems.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.5.5</version>
+  </parent>
+
+  <groupId>com.epam.digital.data.platform</groupId>
+  <artifactId>ddm-digital-document-client</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <properties>
+    <java.version>17</java.version>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <spring-cloud.version>2025.0.0</spring-cloud.version>
+    <jetty.version>11.0.18</jetty.version>
+
+    <digital-document-service-api.version>1.0.0-SNAPSHOT</digital-document-service-api.version>
+    <ddm-starter-error-handler.version>1.0.0-SNAPSHOT</ddm-starter-error-handler.version>
+
+    <wiremock.version>3.3.1</wiremock.version>
+    <sonar.coverage.exclusions>
+      **/com/epam/digital/data/platform/dgtldcmnt/config/**
+    </sonar.coverage.exclusions>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring-cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty.ee10</groupId>
+        <artifactId>jetty-ee10-bom</artifactId>
+        <version>12.0.3</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!-- Spring cloud dependencies -->
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-openfeign</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.openfeign</groupId>
+      <artifactId>feign-annotation-error-decoder</artifactId>
+    </dependency>
+
+    <!-- DDM libraries -->
+    <dependency>
+      <groupId>com.epam.digital.data.platform</groupId>
+      <artifactId>digital-document-service-api</artifactId>
+      <version>${digital-document-service-api.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.epam.digital.data.platform</groupId>
+      <artifactId>ddm-starter-error-handler</artifactId>
+      <version>${ddm-starter-error-handler.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.epam.digital.data.platform</groupId>
+          <artifactId>ddm-starter-security</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- Lombok -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wiremock</groupId>
+      <artifactId>wiremock</artifactId>
+      <scope>test</scope>
+      <version>${wiremock.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+      <plugin>
+       <groupId>org.cyclonedx</groupId>
+       <artifactId>cyclonedx-maven-plugin</artifactId>
+       <version>2.7.4</version>
+       <configuration>
+         <outputName>bom-dt</outputName>
+       </configuration>
+       <executions>
+         <execution>
+           <phase>compile</phase>
+           <goals>
+             <goal>makeAggregateBom</goal>
+           </goals>
+        </execution>
+      </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
